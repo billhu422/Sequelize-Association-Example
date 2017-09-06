@@ -1,7 +1,7 @@
 {
   "development": {
-    "url": "postgres://postgres:password@localhost:5432/garden",
-    "dialect": "postgres"
+    "url": "mysql://sequelize_test:sequelize_test@192.168.87.152:8999/sequelize_test",
+    "dialect": "mysql"
   },
   "test": {
     "username": "null",
