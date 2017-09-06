@@ -10,6 +10,8 @@ const User = db.user;
 const Product = db.product;
 const Order = db.order;
 const ProductOrder = db['product_order'];
+const Abc = db.abc;
+const AbcRelationship = db['abcRelationship'];
 
 //parses request body
 app.use(bodyParser.json());
@@ -25,14 +27,14 @@ app.use(function (req, res, next) {
 
 function handleResponse(res) {
   return function(data) {
-    console.log(data);
+    console.log(JSON.stringify(data,4,4));
     res.send(data);
   };
 }
 
 function handleError(res) {
   return function(error) {
-    console.log(error);
+    console.log(JSON.stringify(error,4,4));
     res.send(error);
   };
 }
@@ -76,6 +78,36 @@ app.route('/user')
     .post(function(req, res) {
       return Product.create(req.body)
         .then(handleResponse(res), handleError(res));
+    });
+
+app.route('/abc/:id')
+    .get(function (req,res) {
+        return Abc.findOne({ where: { id: req.params.id },include: [ 'sub' ]})
+        .then(handleResponse(res), handleError(res));
+    });
+
+app.route('/abc')
+    .get(function (req,res) {
+        return Abc.findAll({ include: [ 'sub' ]})
+        .then(handleResponse(res), handleError(res));
+    })
+    .post(function (req,res) {
+        return Abc.create(req.body)
+        .then(handleResponse(res), handleError(res));
+    });
+
+
+app.route('/abc/:bundledId/abc/:id')
+    .post(function (req,res) {
+        return Abc.findOne({ where: { id: req.params.bundledId } })
+      .then(function(abc) {
+        //associate the product with the order and pass other options via the through
+          console.log(JSON.stringify(abc,4,4));
+          console.log(req.params.id,req.body.type);
+        //return abc.addAbc(req.params.id, { through: { type: req.body.type }});
+          return AbcRelationship.create({ abcId: req.params.bundledId, subId: req.params.id, type: req.body.type })
+      })
+            .then(handleResponse(res), handleError(res));
     });
 
 //deal with a specific product in order
