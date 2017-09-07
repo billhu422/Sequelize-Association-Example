@@ -84,6 +84,10 @@ app.route('/abc/:id')
     .get(function (req,res) {
         return Abc.findOne({ where: { id: req.params.id },include: [ 'sub' ]})
         .then(handleResponse(res), handleError(res));
+/*        return db.sequelize.query('SELECT `abc`.`id`, `abc`.`name`, `abc`.`description`, `abc`.`createdAt`, `abc`.`updatedAt`, \n' +
+            '`sub->abcRelationship`.`abcId` AS `abcRelationship.abcId`, `sub->abcRelationship`.`subId` AS `abcRelationship.subId`, `sub->abcRelationship`.`type` AS `abcRelationship.type`, `sub->abcRelationship`.`createdAt` AS `abcRelationship.createdAt`, `sub->abcRelationship`.`updatedAt` AS `abcRelationship.updatedAt` \n' +
+            'FROM `abcs` AS `abc` LEFT OUTER JOIN ( `abcRelationships` AS `sub->abcRelationship` INNER JOIN `abcs` AS `sub` ON `sub`.`id` = `sub->abcRelationship`.`subId`) ON `abc`.`id` = `sub->abcRelationship`.`abcId` WHERE `abc`.`id` = \'3\';',{ type:  db.Sequelize.SELECT})
+            .then(handleResponse(res), handleError(res));*/
     });
 
 app.route('/abc')
